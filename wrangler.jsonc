@@ -14,6 +14,9 @@
 
   // Per-IP limit on scans: 4 per 60 seconds. Each scan costs you API money,
   // so keep this tight. period must be 10 or 60.
+  // Workers AI: Whisper transcribes voice prompts. Small free daily allowance, then cents per audio minute.
+  "ai": { "binding": "AI" },
+
   "ratelimits": [
     {
       "name": "SCAN_LIMITER",

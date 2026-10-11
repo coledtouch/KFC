@@ -16,6 +16,8 @@ rake/
 
 How a scan works: the browser shrinks each photo to 1568px JPEG, posts it to `/api/scan`, the Worker builds the prompt itself (visitors can't send their own), calls the Claude API with your key, and returns the report as JSON. Nothing is stored. The photo bench runs entirely in the browser and never uploads anything.
 
+Voice prompts: the browser records (or takes an uploaded file), converts it to 16 kHz mono WAV, and measures length, pauses and silence. The Worker transcribes it with Whisper on Workers AI (`ai` binding in `wrangler.jsonc`; a small free daily allowance, then cents per audio minute), counts filler words and pace, and Claude scores the words and delivery and writes a replacement script.
+
 ## Turn on scanning
 
 ```powershell

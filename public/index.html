@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="light">
 <title>Keep Fix Cut | Free Dating Profile Teardown for Men</title>
 <meta name="description" content="Free AI teardown of your Hinge, Tinder, or Bumble profile. Every photo graded keep, fix, or cut, prompts rewritten in your voice, a ranked fix list, and a photo editor that runs in your browser.">
 <meta property="og:title" content="Keep Fix Cut: your profile, punch-listed">
@@ -22,7 +22,7 @@
 html,body{margin:0}
 img{max-width:100%}
 [hidden]{display:none!important}
-/* Layout: an inspection report for a dating profile. Poster-weight condensed display for verdicts and stamps, a quiet industrial body face, mono only for real data. Hero: an annotated phone. Report: a contact sheet with grease-pencil marks and a tickable punch list. Bench: a darkroom stage with a before/after split. */
+/* Theme: paper only, by design. Layout: an inspection report for a dating profile. Poster-weight condensed display for verdicts and stamps, a quiet industrial body face, mono only for real data. Hero: an annotated phone. Report: a contact sheet with grease-pencil marks and a tickable punch list. Bench: a darkroom stage with a before/after split. */
 :root{
   --paper:#EEF0F3; --sheet:#FFFFFF; --ink:#12161D; --muted:#5A6473; --rule:#D5DAE2; --rule-2:#E6E9EE;
   --accent:#12161D; --on-accent:#F3F4F6; --hi:#F5D547; --on-hi:#1B1A10;
@@ -35,22 +35,6 @@ img{max-width:100%}
   --grain:.045;
   --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --paper:#0E1116; --sheet:#161B23; --ink:#E8ECF2; --muted:#98A2B3; --rule:#2A3140; --rule-2:#222935;
-  --accent:#E8ECF2; --on-accent:#0E1116; --hi:#E4C73A; --on-hi:#1B1A10;
-  --stripe:linear-gradient(90deg,#58D094 0 33.34%,#F2B64A 33.34% 66.67%,#FF8C82 66.67%);
-  --keep:#58D094; --keep-bg:#10301F; --fix:#F2B64A; --fix-bg:#33260E; --cut:#FF8C82; --cut-bg:#3A1614;
-  --stage:#0A0C10; --on-stage:#98A2B3; --strip:#07090C; --strip-2:#141820; --strip-rule:#2A3140; --bezel:#222935;
-  --grain:.07;
-  color-scheme:dark}}
-:root[data-theme="dark"]{
-  --paper:#0E1116; --sheet:#161B23; --ink:#E8ECF2; --muted:#98A2B3; --rule:#2A3140; --rule-2:#222935;
-  --accent:#E8ECF2; --on-accent:#0E1116; --hi:#E4C73A; --on-hi:#1B1A10;
-  --stripe:linear-gradient(90deg,#58D094 0 33.34%,#F2B64A 33.34% 66.67%,#FF8C82 66.67%);
-  --keep:#58D094; --keep-bg:#10301F; --fix:#F2B64A; --fix-bg:#33260E; --cut:#FF8C82; --cut-bg:#3A1614;
-  --stage:#0A0C10; --on-stage:#98A2B3; --strip:#07090C; --strip-2:#141820; --strip-rule:#2A3140; --bezel:#222935;
-  --grain:.07;
-  color-scheme:dark}
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -184,6 +168,26 @@ textarea{min-height:150px;resize:vertical;line-height:1.45}
 .progress .bar i{display:block;height:100%;width:0;background:var(--stripe);border-radius:5px;transition:width .6s ease}
 .pstage{display:flex;justify-content:space-between;gap:12px;font-size:14px;color:var(--muted)}
 
+/* voice prompt */
+.voice-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.voice-row .dot{width:10px;height:10px;border-radius:50%;background:var(--cut);display:inline-block}
+.rec-live{display:inline-flex;align-items:center;gap:8px;font-weight:600}
+.rec-live .dot.live{animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+.voice-ready{display:flex;flex-direction:column;gap:8px;background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:10px}
+.wave{width:100%;height:56px;display:block;border-radius:6px;background:var(--sheet)}
+.voice-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.voice-meta audio{height:36px;flex:1 1 180px;min-width:0}
+.vstats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+@media (max-width:600px){.vstats{grid-template-columns:repeat(2,1fr)}}
+.vstat{border:1px solid var(--rule);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.vstat b{font-family:var(--display);font-weight:900;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
+.vstat span{font-size:13px;color:var(--muted)}
+.vstat.ok b{color:var(--keep)}.vstat.warn b{color:var(--fix)}.vstat.bad b{color:var(--cut)}
+.vhead{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.vhead b{font-family:var(--display);font-weight:800;font-size:26px;text-transform:uppercase;letter-spacing:.02em;line-height:1}
+.vnote{color:var(--muted);font-size:15px;max-width:68ch}
+
 /* report sheet */
 .report{position:relative;background:var(--sheet);border:1px solid var(--rule);border-radius:8px;overflow:hidden;box-shadow:0 1px 0 var(--rule),0 24px 50px -40px rgba(0,0,0,.5)}
 .report::before{content:"";position:absolute;inset:0;background-image:var(--noise);opacity:var(--grain);pointer-events:none;z-index:0}
@@ -253,7 +257,7 @@ textarea{min-height:150px;resize:vertical;line-height:1.45}
 .pc-body .act{color:var(--ink);border-top:1px dashed var(--rule);padding-top:10px}
 .pc-body .act b{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:2px}
 .pc-body .btn{align-self:flex-start;margin-top:4px}
-@media (max-width:560px){.pc{flex-direction:row}.pc-photo{width:128px;aspect-ratio:auto;min-height:170px}.pc-photo .sc{font-size:22px}.pc-photo .stamp{font-size:11px;left:6px;top:6px;padding:4px 6px 3px}.pc-photo .lab{font-size:10px}}
+@media (max-width:560px){.pc-photo{max-height:440px}.pc-body{padding:12px 12px 14px}.pc-body .btn{align-self:stretch;justify-content:center}}
 .strip-wrap{margin-top:22px}
 .strip-wrap .lbl{display:block;font-weight:700;font-size:15px;margin-bottom:8px}
 .strip{display:flex;gap:10px;padding:14px 12px;background:var(--strip);border-radius:8px;overflow-x:auto;background-image:radial-gradient(circle,#4A5262 0 2px,transparent 2.6px),radial-gradient(circle,#4A5262 0 2px,transparent 2.6px);background-size:14px 6px,14px 6px;background-position:0 3px,0 calc(100% - 3px);background-repeat:repeat-x,repeat-x}
@@ -455,6 +459,29 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
             <label for="ageIn">Your age, optional</label>
             <input type="text" id="ageIn" inputmode="numeric" placeholder="38">
           </div>
+          <div class="field voice" id="voiceField">
+            <label for="voicePrompt">Voice prompt, optional</label>
+            <p class="hint">Record the voice prompt you use on the app, or upload a recording. It gets scored on what you say, length, pace, and fillers.</p>
+            <input type="text" id="voicePrompt" placeholder="Which prompt? e.g. I'm weirdly attracted to">
+            <div class="voice-row" id="voiceIdle">
+              <button class="btn btn-ghost btn-sm" type="button" id="recBtn"><span class="dot"></span>Record</button>
+              <button class="btn btn-ghost btn-sm" type="button" id="audBtn">Upload a recording</button>
+              <input type="file" id="audIn" accept="audio/*" hidden>
+            </div>
+            <div class="voice-row rec" id="voiceRec" hidden>
+              <span class="rec-live"><span class="dot live"></span>Recording <b class="mono" id="recTime">0:00</b> <span class="hint">of 0:30</span></span>
+              <button class="btn btn-primary btn-sm" type="button" id="recStop">Stop</button>
+            </div>
+            <div class="voice-ready" id="voiceReady" hidden>
+              <canvas class="wave" id="wave" width="600" height="56"></canvas>
+              <div class="voice-meta">
+                <audio id="voicePlay" controls preload="metadata"></audio>
+                <span class="mono" id="voiceDur"></span>
+                <button class="btn btn-ghost btn-sm" type="button" id="voiceRm">Remove</button>
+              </div>
+            </div>
+            <p class="hint" id="voiceMsg" hidden></p>
+          </div>
         </div>
         <div class="progress" id="progress" hidden>
           <div class="bar"><i id="pbar"></i></div>
@@ -626,9 +653,9 @@ const EXAMPLE = {
   prompts: [
     {prompt:"My greatest strength", verdict:"fix", current:"is my ability to build and maintain strong foundations. This goes for my career, my relationships, and my home. I focus on consistency and follow-through. When I commit to something, or someone, I'm in it for the long haul.", rewrite:"Building things that last. A career, a home, a Sunday breakfast routine. When I'm in, I'm all in.", why:"Same message in half the words. The breakfast routine gives her a question to ask."},
     {prompt:"My love language is", verdict:"keep", current:"Physical touch, coupled with consistency. It's about the small, daily gestures: a hand on the back, a hug, or just sitting close.", rewrite:"Physical touch, the small stuff. A hand on your back in line for coffee. Sitting close when we have the whole couch.", why:"Already good. The rewrite puts her in a scene instead of describing a concept."},
-    {prompt:"I'll fall for you if", verdict:"fix", current:"you can be completely, wonderfully yourself, and you value a deep, honest connection over surface-level dating. I'm looking for a woman who's open, communicative, and ready to skip the games.", rewrite:"you'd rather have one real conversation than ten \"hey\"s. Bonus points if you can keep pace with my husky on a long walk.", why:"\"Skip the games\" is on thousands of profiles. Specifics stand out and invite a reply."},
-    {prompt:"I'm weirdly attracted to (voice)", verdict:"keep", current:"Voice prompt", rewrite:"Keep it. Make sure it's under 20 seconds and recorded somewhere quiet.", why:"Voice builds trust fast and few men use it."}
+    {prompt:"I'll fall for you if", verdict:"fix", current:"you can be completely, wonderfully yourself, and you value a deep, honest connection over surface-level dating. I'm looking for a woman who's open, communicative, and ready to skip the games.", rewrite:"you'd rather have one real conversation than ten \"hey\"s. Bonus points if you can keep pace with my husky on a long walk.", why:"\"Skip the games\" is on thousands of profiles. Specifics stand out and invite a reply."}
   ],
+  voiceNote: "This profile has a voice prompt (\"I'm weirdly attracted to\") that wasn't recorded for the example. Record yours in the scanner and it gets scored on what you say, length, pace, and filler words, with a script to try instead.",
   fixes: [
     {impact:"high", action:"Get two photos someone else took: one outdoor candid, one social or event shot. All twelve photos here are selfies."},
     {impact:"high", action:"Cut the pillow selfie and the hoodie car selfie."},
@@ -732,14 +759,21 @@ const statusEl = $("#status"), runBtn = $("#runBtn"), stopBtn = $("#stopBtn");
 function setStatus(msg, err){ statusEl.textContent = msg; statusEl.classList.toggle("err", !!err); }
 function updateStatus(){
   if(running) return;
-  const hasInput = photos.length || $("#promptsIn").value.trim();
+  const hasInput = photos.length || $("#promptsIn").value.trim() || voice.wavB64;
   const needTs = !!(tsSiteKey && !tsToken);
   const canScan = sampleResolved && (!inArtifact || !!sample);
   runBtn.disabled = !hasInput || needTs || !canScan;
   if(inArtifact && sampleResolved && !sample) setStatus("Scanning isn't available in this view. The photo bench still works.");
   else if(!hasInput) setStatus("Add at least one photo, or paste your prompts, to start.");
   else if(needTs) setStatus("Finish the verification box to run your scan.");
-  else setStatus(`${photos.length ? photos.length + (photos.length===1 ? " photo" : " photos") : "Prompts only"} ready. Most scans take 30 to 60 seconds.`);
+  else {
+    const parts = [];
+    if(photos.length) parts.push(photos.length + (photos.length===1 ? " photo" : " photos"));
+    if($("#promptsIn").value.trim()) parts.push("prompts");
+    if(voice.wavB64) parts.push("a voice prompt");
+    const what = parts.join(" and ");
+    setStatus(`${what.charAt(0).toUpperCase()+what.slice(1)} ready. Most scans take 30 to 60 seconds.`);
+  }
 }
 $("#promptsIn").addEventListener("input", updateStatus);
 
@@ -824,7 +858,8 @@ async function runScan(signal){
   catch{ throw new Error("One of the images couldn't be read. Try a JPG or PNG."); }
   const res = await fetch("/api/scan", {
     method:"POST", headers:{"content-type":"application/json"}, signal,
-    body: JSON.stringify({app, goal, age, prompts:text, images, turnstileToken:tsToken})
+    body: JSON.stringify({app, goal, age, prompts:text, images, turnstileToken:tsToken,
+      voice: voice.wavB64 ? {wav:voice.wavB64, prompt:$("#voicePrompt").value.trim().slice(0,80), metrics:voice.metrics} : null})
   });
   const out = await res.json().catch(()=>({}));
   if(!res.ok) throw new Error(out.error || "The scan hit a connection problem. Try again.");
@@ -857,10 +892,12 @@ $("#scanForm").addEventListener("submit", async e=>{
   try{
     const data = await runScan(ctl.signal);
     if(data && data.error) throw new Error(String(data.error));
-    if(!data || typeof data !== "object" || !Array.isArray(data.photos)) throw new Error("The report came back incomplete. Run the scan again.");
+    if(!data || typeof data !== "object") throw new Error("The report came back incomplete. Run the scan again.");
     lastReport = normalize(data); isExample = false;
+    lastReport.voicePcm = voice.pcm;
     const n = photos.length;
-    lastMeta = `${$("#appSel").value}, ${n ? n + (n===1 ? " image" : " images") : "prompts only"}, ${new Date().toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})}`;
+    const what = [n ? n + (n===1 ? " image" : " images") : "", $("#promptsIn").value.trim() ? "prompts" : "", voice.wavB64 ? "voice prompt" : ""].filter(Boolean).join(", ") || "prompts only";
+    lastMeta = `${$("#appSel").value}, ${what}, ${new Date().toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})}`;
     endProgress(true);
     renderReport(lastReport, lastMeta, true);
     $("#repTitle").textContent = "Your report";
@@ -890,7 +927,12 @@ function normalize(d){
     photos: arr(d.photos).map(p=>({upload:Number(p.upload)||null, label:String(p.label||"Photo"), verdict:v(p.verdict), score:clamp(Number(p.score)||0,0,10), what:String(p.what||""), fix:String(p.fix||""), bench:p.bench && typeof p.bench==="object" ? p.bench : null})),
     order: arr(d.order).map(String),
     prompts: arr(d.prompts).map(p=>({prompt:String(p.prompt||""), verdict:v(p.verdict), current:String(p.current||""), rewrite:String(p.rewrite||""), why:String(p.why||"")})),
-    fixes: arr(d.fixes).map(f=>({impact:["high","med","low"].includes(f.impact)?f.impact:"med", action:String(f.action||"")}))
+    fixes: arr(d.fixes).map(f=>({impact:["high","med","low"].includes(f.impact)?f.impact:"med", action:String(f.action||"")})),
+    voice: d.voice && typeof d.voice === "object" ? {
+      score: clamp(Number(d.voice.score)||0,0,10), verdict: v(d.voice.verdict), what: String(d.voice.what||""), fix: String(d.voice.fix||""),
+      script: String(d.voice.script||""), why: String(d.voice.why||""), transcript: String(d.voice.transcript||""), prompt: String(d.voice.prompt||""),
+      stats: d.voice.stats && typeof d.voice.stats === "object" ? d.voice.stats : {}
+    } : null
   };
 }
 
@@ -944,7 +986,7 @@ function renderReport(d, meta, animate){
   const pool = Array.isArray(d.pool) ? d.pool : [];
   R.append(el("div",{class:"rhead"+(isExample?" example":"")},
     el("span",{text:isExample ? "Example report" : "Your report"}),
-    el("span",{text:isExample ? "Hinge, 6 photos and 4 prompts on the profile, plus 6 spares from the camera roll" : meta})));
+    el("span",{text:isExample ? "Hinge, 6 photos, 3 prompts and a voice prompt on the profile, plus 6 spares from the camera roll" : meta})));
 
   const counts = {keep:0, fix:0, cut:0};
   d.photos.concat(pool).forEach(p=>counts[p.verdict]++);
@@ -959,7 +1001,7 @@ function renderReport(d, meta, animate){
     metrics.append(el("div",{class:"metric"+(m.score>=8?" g-keep":m.score<5?" g-cut":"")}, el("span",{text:m.name}), bar, el("span",{class:"v", text:m.score.toFixed(m.score%1?1:0)}), m.note ? el("span",{class:"note", text:m.note}) : null));
   });
   const strengths = el("ul",{class:"strengths"}); d.strengths.forEach(s=>strengths.append(el("li",{text:s})));
-  R.append(el("div",{class:"rblock"}, el("div",{class:"split"},
+  if(d.strengths.length || d.metrics.length) R.append(el("div",{class:"rblock"}, el("div",{class:"split"},
     el("div",null, el("h4",{text:"What's working"}), strengths),
     el("div",null, el("h4",{text:"Scorecard"}), metrics))));
 
@@ -982,7 +1024,7 @@ function renderReport(d, meta, animate){
     });
     lineup.append(el("div",{class:"strip-wrap"}, el("span",{class:"lbl", text:"Best order"}), strip));
   }
-  R.append(lineup);
+  if(d.photos.length || pool.length) R.append(lineup);
 
   if(d.prompts.length){
     const pb = el("div",{class:"rblock"}, el("h4",{text:"Prompts"}));
@@ -996,6 +1038,29 @@ function renderReport(d, meta, animate){
         el("p",{class:"why", text:p.why})));
     });
     R.append(pb);
+  }
+
+  if(d.voice){
+    const vb = el("div",{class:"rblock"}, el("h4",{text:"Voice prompt"}));
+    const st = d.voice.stats || {};
+    const dur = Number(st.duration)||0, wpm = Number(st.wpm)||0, fillers = Number(st.fillers)||0, pause = Number(st.longestPause)||0;
+    vb.append(el("div",{class:"vhead"}, el("b",{text:d.voice.prompt || "Voice prompt"}), el("span",{class:"stamp "+d.voice.verdict, text:d.voice.verdict}), el("span",{class:"mono", text:d.voice.score.toFixed(1)+" / 10"})));
+    if(d.voicePcm){ const c = el("canvas",{class:"wave", width:"900", height:"64"}); vb.append(c); drawWave(d.voicePcm, c); }
+    const grade = (v, lo, hi, loBad, hiBad)=> (v>=lo && v<=hi) ? "ok" : (v<loBad || v>hiBad) ? "bad" : "warn";
+    vb.append(el("div",{class:"vstats"},
+      el("div",{class:"vstat "+grade(dur,12,25,6,31)}, el("b",{text:dur.toFixed(0)+"s"}), el("span",{text:"length. 15 to 25 is the sweet spot, 30 is the app limit"})),
+      el("div",{class:"vstat "+(wpm ? grade(wpm,120,175,95,200) : "")}, el("b",{text:wpm ? String(Math.round(wpm)) : "n/a"}), el("span",{text:"words per minute. Conversation runs 130 to 170"})),
+      el("div",{class:"vstat "+(fillers<=1?"ok":fillers<=3?"warn":"bad")}, el("b",{text:String(fillers)}), el("span",{text:"filler words (um, uh, like, you know)"})),
+      el("div",{class:"vstat "+(pause<=1?"ok":pause<=2?"warn":"bad")}, el("b",{text:pause.toFixed(1)+"s"}), el("span",{text:"longest pause"}))));
+    const copyS = el("button",{class:"btn btn-ghost btn-sm copy", type:"button", text:"Copy"});
+    copyS.addEventListener("click", ()=>copyText(d.voice.script, copyS));
+    vb.append(el("div",{class:"pr"},
+      el("div",{class:"box before"}, el("span",{class:"lbl", text:"What you said"}), d.voice.transcript || "(no words came through)"),
+      el("div",{class:"box after"}, el("span",{class:"lbl", text:"Say this instead"}), el("p",{text:d.voice.script || d.voice.fix}), d.voice.script ? copyS : null),
+      el("p",{class:"why", text:[d.voice.what, d.voice.fix, d.voice.why].filter(Boolean).join(" ")})));
+    R.append(vb);
+  } else if(d.voiceNote){
+    R.append(el("div",{class:"rblock"}, el("h4",{text:"Voice prompt"}), el("p",{class:"vnote", text:d.voiceNote})));
   }
 
   if(d.fixes.length){
@@ -1177,6 +1242,91 @@ $("#saveBtn").addEventListener("click", ()=>{
     $("#benchNote").scrollIntoView({behavior:reduced?"auto":"smooth", block:"nearest"});
   }, "image/jpeg", 0.92);
 });
+
+/* ---------- Voice prompt: record or upload, convert to 16 kHz WAV in the browser ---------- */
+const voice = {blob:null, wavB64:null, pcm:null, duration:0, metrics:null};
+const VMAX = 30, VCAP = 60;
+let rec = null, recChunks = [], recTimer = null, recStart = 0, recStream = null;
+if(inArtifact) $("#voiceField").hidden = true;
+$("#audBtn").addEventListener("click", ()=>$("#audIn").click());
+$("#audIn").addEventListener("change", ()=>{ const f = $("#audIn").files[0]; if(f) loadVoice(f); $("#audIn").value = ""; });
+$("#recBtn").addEventListener("click", startRec);
+$("#recStop").addEventListener("click", stopRec);
+$("#voiceRm").addEventListener("click", clearVoice);
+function voiceMsg(t, err){ const m = $("#voiceMsg"); m.hidden = !t; m.textContent = t; m.style.color = err ? "var(--cut)" : ""; }
+function fmtTime(sec){ sec = Math.max(0, Math.round(sec)); return Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0"); }
+async function startRec(){
+  if(!navigator.mediaDevices || !window.MediaRecorder){ voiceMsg("Recording isn't supported in this browser. Upload a recording instead.", true); return; }
+  try{ recStream = await navigator.mediaDevices.getUserMedia({audio:true}); }
+  catch{ voiceMsg("Microphone access was blocked. Allow it for this site, or upload a recording.", true); return; }
+  const mime = ["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg;codecs=opus"].find(m=>MediaRecorder.isTypeSupported(m));
+  try{ rec = new MediaRecorder(recStream, mime ? {mimeType:mime} : undefined); }
+  catch{ rec = new MediaRecorder(recStream); }
+  recChunks = [];
+  rec.ondataavailable = e=>{ if(e.data && e.data.size) recChunks.push(e.data); };
+  rec.onstop = ()=>{ recStream.getTracks().forEach(t=>t.stop()); loadVoice(new Blob(recChunks, {type: rec.mimeType || "audio/webm"})); };
+  rec.start(250);
+  recStart = performance.now();
+  $("#voiceIdle").hidden = true; $("#voiceRec").hidden = false; $("#recTime").textContent = "0:00"; voiceMsg("");
+  recTimer = setInterval(()=>{ const sec = (performance.now()-recStart)/1000; $("#recTime").textContent = fmtTime(sec); if(sec >= VMAX) stopRec(); }, 200);
+}
+function stopRec(){ clearInterval(recTimer); $("#voiceRec").hidden = true; if(rec && rec.state !== "inactive") rec.stop(); }
+async function loadVoice(blob){
+  voiceMsg("Preparing the audio.");
+  try{
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ac = new AC();
+    const ab = await blob.arrayBuffer();
+    const decoded = await new Promise((res, rej)=>{ ac.decodeAudioData(ab, res, rej); });
+    if(ac.close) ac.close();
+    if(decoded.duration < 1) throw new Error("short");
+    const rate = 16000, keep = Math.min(decoded.duration, VCAP);
+    const off = new OfflineAudioContext(1, Math.ceil(keep*rate), rate);
+    const src = off.createBufferSource(); src.buffer = decoded; src.connect(off.destination); src.start();
+    const pcm = (await off.startRendering()).getChannelData(0);
+    voice.pcm = pcm; voice.metrics = measure(pcm, rate); voice.wavB64 = wavBase64(pcm, rate); voice.duration = keep; voice.blob = blob;
+    drawWave(pcm, $("#wave"));
+    const play = $("#voicePlay"); if(play.dataset.url) URL.revokeObjectURL(play.dataset.url); play.dataset.url = URL.createObjectURL(blob); play.src = play.dataset.url;
+    $("#voiceDur").textContent = fmtTime(keep) + (decoded.duration > VMAX ? ", over the app's 30 s limit" : "");
+    $("#voiceIdle").hidden = true; $("#voiceReady").hidden = false; voiceMsg("");
+  }catch(e){
+    $("#voiceIdle").hidden = false; $("#voiceReady").hidden = true;
+    voiceMsg(e && e.message === "short" ? "That recording is under a second. Try again." : "Couldn't read that audio. Try an MP3, M4A, or WAV, or record here instead.", true);
+  }
+  updateStatus();
+}
+function clearVoice(){ voice.blob = null; voice.wavB64 = null; voice.pcm = null; voice.duration = 0; voice.metrics = null; $("#voiceReady").hidden = true; $("#voiceIdle").hidden = false; voiceMsg(""); updateStatus(); }
+function measure(pcm, rate){
+  const frame = Math.round(rate*0.02), n = Math.floor(pcm.length/frame), rms = new Float32Array(n);
+  let peak = 0;
+  for(let i=0;i<n;i++){ let acc=0; for(let j=i*frame;j<(i+1)*frame;j++){ const x=pcm[j]; acc+=x*x; } rms[i]=Math.sqrt(acc/frame); if(rms[i]>peak) peak=rms[i]; }
+  const thr = Math.max(0.004, peak*0.08);
+  let silent=0, first=-1, last=-1;
+  for(let i=0;i<n;i++){ if(rms[i]<thr) silent++; else { if(first<0) first=i; last=i; } }
+  if(first<0){ first=0; last=Math.max(0,n-1); }
+  let inner=0, run=0; for(let i=first;i<=last;i++){ if(rms[i]<thr){ run++; if(run>inner) inner=run; } else run=0; }
+  const mean = n ? rms.reduce((a,b)=>a+b,0)/n : 0;
+  return {duration:+(pcm.length/rate).toFixed(1), silenceRatio:+(n ? silent/n : 1).toFixed(2), leadSilence:+(first*0.02).toFixed(1), trailSilence:+((n-1-last)*0.02).toFixed(1), longestPause:+(inner*0.02).toFixed(1), loudnessDb:Math.round(20*Math.log10(Math.max(mean,1e-6)))};
+}
+function wavBase64(pcm, rate){
+  const buf = new ArrayBuffer(44 + pcm.length*2), v = new DataView(buf);
+  const str = (o,t)=>{ for(let i=0;i<t.length;i++) v.setUint8(o+i, t.charCodeAt(i)); };
+  str(0,"RIFF"); v.setUint32(4, 36+pcm.length*2, true); str(8,"WAVE"); str(12,"fmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+  v.setUint32(24,rate,true); v.setUint32(28,rate*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true); str(36,"data"); v.setUint32(40,pcm.length*2,true);
+  for(let i=0, o=44;i<pcm.length;i++,o+=2){ const x = Math.max(-1, Math.min(1, pcm[i])); v.setInt16(o, x<0 ? x*0x8000 : x*0x7FFF, true); }
+  const bytes = new Uint8Array(buf); let bin = ""; const CH = 0x8000;
+  for(let i=0;i<bytes.length;i+=CH) bin += String.fromCharCode.apply(null, bytes.subarray(i, i+CH));
+  return btoa(bin);
+}
+function drawWave(pcm, canvas){
+  const c = canvas.getContext("2d"), W = canvas.width, H = canvas.height, bars = Math.min(160, Math.floor(W/5)), per = Math.floor(pcm.length/bars);
+  c.clearRect(0,0,W,H);
+  const peaks = []; let max = 0;
+  for(let b=0;b<bars;b++){ let m=0; for(let i=b*per;i<(b+1)*per;i+=4){ const a=Math.abs(pcm[i]); if(a>m) m=a; } peaks.push(m); if(m>max) max=m; }
+  const bw = W/bars;
+  c.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--keep").trim() || "#15794A";
+  for(let b=0;b<bars;b++){ const h = Math.max(2, (peaks[b]/(max||1))*(H-6)); c.fillRect(b*bw+1, (H-h)/2, Math.max(1,bw-2), h); }
+}
 
 /* ---------- Boot ---------- */
 renderTray();
