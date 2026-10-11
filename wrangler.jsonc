@@ -1,0 +1,44 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "rake",
+  "main": "src/index.js",
+  "compatibility_date": "2026-06-01",
+
+  // Static site. Requests that match a file in ./public are served directly;
+  // everything else (including /api/*) goes to the Worker.
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+
+  // Per-IP limit on scans: 4 per 60 seconds. Each scan costs you API money,
+  // so keep this tight. period must be 10 or 60.
+  "ratelimits": [
+    {
+      "name": "SCAN_LIMITER",
+      "namespace_id": "4401",
+      "simple": { "limit": 4, "period": 60 }
+    }
+  ],
+
+  "vars": {
+    // Model used for scans. Sonnet is the cost/quality sweet spot for vision.
+    "MODEL": "claude-sonnet-5-5",
+    // After your first deploy, set this to your live URL(s), comma separated,
+    // e.g. "https://rake.yourname.workers.dev,https://getrake.com".
+    // Empty means scans are accepted from any origin.
+    "ALLOWED_ORIGINS": "https://keepfixcut.com,https://www.keepfixcut.com,https://rake.coleciprari.workers.dev",
+    // Optional Cloudflare Turnstile bot check. Put the SITE key here and the
+    // SECRET key in a secret (TURNSTILE_SECRET). Leave empty to skip.
+    "TURNSTILE_SITE_KEY": ""
+  },
+
+  // Custom domain. The zone lives in this Cloudflare account; deploy attaches both hosts.
+  "routes": [
+    { "pattern": "keepfixcut.com", "custom_domain": true },
+    { "pattern": "www.keepfixcut.com", "custom_domain": true }
+  ],
+
+  "observability": { "enabled": true }
+}

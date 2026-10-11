@@ -1,0 +1,4 @@
+# Copy this file to .dev.vars for local testing with `npx wrangler dev`.
+# .dev.vars is git-ignored. In production, use `npx wrangler secret put` instead.
+ANTHROPIC_API_KEY=sk-ant-your-key-here
+# TURNSTILE_SECRET=0x4AAAA...
