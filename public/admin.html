@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#244C39">
+  <title>Keep Fix Cut · Private overview</title>
+  <link rel="stylesheet" href="/admin.css">
+  <script src="/admin.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to dashboard</a>
+  <div class="brand-stripe" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Keep Fix Cut home"><span>Keep</span><span>Fix</span><span>Cut</span></a>
+    <span class="private-label"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 9V6a4 4 0 0 1 8 0v3M4 9h12v8H4z"/></svg>Private overview</span>
+    <button class="button button-quiet" type="button" id="logoutBtn" hidden>Sign out</button>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="login-view" id="loginView" aria-labelledby="loginTitle">
+      <div class="login-intro"><span class="eyebrow">Behind the profile</span><h1>A clear view of<br>how it's going.</h1><p>Your visitors, profile reviews, and usage.<br>One quiet place to keep an eye on the app.</p><div class="intro-rule" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="login-card">
+        <div class="lock-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5zM12 14v3"/></svg></div>
+        <h2 id="loginTitle">Welcome back.</h2>
+        <p id="loginDescription">Sign in to your private dashboard.</p>
+        <form id="loginForm">
+          <label for="adminPassword">Admin password</label>
+          <div class="password-field"><input id="adminPassword" type="password" autocomplete="current-password" maxlength="256" required aria-describedby="loginStatus"><button type="button" id="passwordToggle" aria-controls="adminPassword" aria-pressed="false">Show</button></div>
+          <button class="button button-primary login-submit" type="submit" id="loginBtn">Sign in</button>
+        </form>
+        <button type="button" class="button button-quiet login-submit" id="retrySessionBtn" hidden>Retry connection</button>
+        <p class="message" id="loginStatus" role="status" aria-live="polite">Checking your session…</p>
+        <p class="login-note">Your password stays out of browser storage. Access is managed with a secure session.</p>
+      </div>
+    </section>
+
+    <div class="dashboard" id="dashboard" hidden>
+      <aside class="sidebar" aria-label="Dashboard sections"><p class="sidebar-label">Your app</p><nav><a href="#overview" class="active">Overview</a><a href="#traffic">Audience</a><a href="#reviews">Profile reviews</a><a href="#usage">API usage</a><a href="#health">Service health</a></nav><a href="/" class="site-link">Open Keep Fix Cut <span aria-hidden="true">↗</span></a><p class="sidebar-note">Aggregate activity.<br>No profile content.</p></aside>
+      <div class="dashboard-content">
+        <section class="page-heading" id="overview" aria-labelledby="dashboardTitle"><div><span class="eyebrow">Keep Fix Cut · Admin</span><h1 id="dashboardTitle" tabindex="-1">The bigger picture.</h1><p>See where traffic comes from, how reviews perform, and what needs a little attention.</p></div><div class="freshness"><span class="freshness-dot" id="freshnessDot" aria-hidden="true"></span><span id="updatedAt">Waiting for data</span><small id="refreshNote">Refreshes every 30 seconds while this tab is visible.</small></div></section>
+        <div class="toolbar"><div class="period-buttons" role="group" aria-label="Dashboard time range"><button type="button" data-days="1" aria-pressed="false">24 hours</button><button type="button" data-days="7" aria-pressed="true">7 days</button><button type="button" data-days="30" aria-pressed="false">30 days</button></div><div class="toolbar-actions"><button class="button button-quiet" type="button" id="refreshBtn"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16 8a6 6 0 1 0 0 5M16 3v5h-5"/></svg>Refresh</button><button class="button button-quiet" type="button" id="copyStatsBtn" disabled>Copy summary</button><button class="button button-primary" type="button" id="exportStatsBtn" disabled>Export CSV</button></div></div>
+        <div class="data-notice" id="dataNotice" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span>Loading your overview…</div>
+        <p class="coverage" id="coverage">Coverage will appear when tracking is connected.</p>
+
+        <section class="metric-grid" aria-label="Key activity metrics">
+          <article class="metric-card live-card"><div class="metric-label"><span class="live-dot" aria-hidden="true"></span>Active now <span class="metric-tag">Estimate</span></div><strong id="metricLive">-</strong><p id="liveDefinition">Visitors active within the recent tracking window.</p></article>
+          <article class="metric-card"><p class="metric-label">Page views</p><strong id="metricVisits">-</strong><p>Tracked page views in this period</p></article>
+          <article class="metric-card"><p class="metric-label">Sessions</p><strong id="metricSessions">-</strong><p>Distinct tracked browsing sessions</p></article>
+          <article class="metric-card"><p class="metric-label">Review rate</p><strong id="metricReviewRate">-</strong><p id="reviewRateDefinition">Sessions that started a profile review</p></article>
+          <article class="metric-card"><p class="metric-label">Successful reviews</p><strong id="metricSuccess">-</strong><p id="successDefinition">Completed profile reports</p></article>
+          <article class="metric-card"><p class="metric-label">Failed reviews</p><strong id="metricFailures">-</strong><p id="failureDefinition">Reviews that could not complete</p></article>
+        </section>
+
+        <section class="panel trend-panel" id="traffic" aria-labelledby="trendTitle"><div class="panel-heading"><div><span class="eyebrow">A little perspective over time</span><h2 id="trendTitle">Traffic &amp; profile reviews</h2></div><div class="chart-legend"><span><i class="visits-swatch"></i>Page views</span><span><i class="reviews-swatch"></i>Successful reviews</span></div></div><div class="chart-wrap" id="trendChart"><p class="empty-state">Your trend will appear as activity is recorded.</p></div><details class="chart-table-details"><summary>View the numbers behind the chart</summary><div class="table-scroll"><table><caption class="vh">Page views and successful reviews by time</caption><thead><tr><th scope="col">Time</th><th scope="col">Page views</th><th scope="col">Successful reviews</th></tr></thead><tbody id="trendRows"></tbody></table></div></details></section>
+
+        <div class="audience-grid"><section class="panel" aria-labelledby="sourcesTitle"><div class="panel-heading"><h2 id="sourcesTitle">Where visitors come from</h2><span class="panel-meta">Referral domains &amp; direct</span></div><div id="sourceList" class="distribution-list"><p class="empty-state">No source data yet.</p></div></section><section class="panel" aria-labelledby="countriesTitle"><div class="panel-heading"><h2 id="countriesTitle">Around the world</h2><span class="panel-meta">Countries</span></div><div id="countryList" class="distribution-list"><p class="empty-state">No country data yet.</p></div></section><section class="panel" aria-labelledby="devicesTitle"><div class="panel-heading"><h2 id="devicesTitle">How they browse</h2><span class="panel-meta">Devices</span></div><div id="deviceList" class="distribution-list"><p class="empty-state">No device data yet.</p></div></section></div>
+        <section class="panel" aria-labelledby="campaignTitle"><div class="panel-heading"><div><span class="eyebrow">What brought them here</span><h2 id="campaignTitle">Sources &amp; campaigns</h2></div><span class="panel-meta">Tagged traffic</span></div><div class="table-scroll"><table><caption class="vh">Traffic source, medium, campaign, and sessions</caption><thead><tr><th scope="col">Source</th><th scope="col">Medium</th><th scope="col">Campaign</th><th scope="col">Sessions</th></tr></thead><tbody id="campaignRows"><tr><td colspan="4" class="empty-state">No tagged campaign traffic yet.</td></tr></tbody></table></div><p class="panel-footnote">Campaign attribution uses the source, medium, and campaign tags on incoming links. Untagged visits appear in referral sources above.</p><div class="attribution-example"><label for="attributionLink">Sharing on Reddit? Use a tagged link.</label><p>This example separates Reddit social traffic from other visits. Change the campaign tag when sharing somewhere new.</p><div class="attribution-copy"><input id="attributionLink" type="url" readonly value="https://keepfixcut.com/?utm_source=reddit&amp;utm_medium=social&amp;utm_campaign=divorce_men"><button type="button" class="button button-quiet" id="copyAttributionBtn">Copy link</button></div></div></section>
+
+        <section class="panel" id="reviews" aria-labelledby="funnelTitle"><div class="panel-heading"><div><span class="eyebrow">From curiosity to a clear plan</span><h2 id="funnelTitle">The review journey</h2></div><span class="panel-meta" id="funnelDefinition">Tracked sessions &amp; review events</span></div><div class="funnel-grid" id="funnel"><p class="empty-state">The review journey will appear when tracking is connected.</p></div><p class="panel-footnote" id="funnelNote">A session can include more than one review. Counts describe recorded activity, not unique people.</p></section>
+
+        <section class="usage-grid" id="usage" aria-label="API usage and cost"><article class="panel spend-panel"><div class="panel-heading"><div><span class="eyebrow">Anthropic · This app only</span><h2>Estimated API cost</h2></div><span class="metric-tag">Estimate</span></div><strong class="spend-value" id="estimatedCost">-</strong><p class="cost-note" id="estimatedCostNote">Calculated from recorded token usage. This is an estimate of this app's usage, not an account invoice.</p><div class="token-grid"><div><span>Input tokens</span><strong id="inputTokens">-</strong></div><div><span>Output tokens</span><strong id="outputTokens">-</strong></div></div><p class="panel-footnote" id="tokenCoverage">Token coverage will appear when usage is recorded.</p></article><article class="panel billing-panel"><div class="panel-heading"><div><span class="eyebrow">Optional · Organization account</span><h2>Provider-reported API cost</h2></div><span class="status-badge neutral" id="billingStatus">Not connected</span></div><strong class="billing-value" id="officialCost">-</strong><p id="officialCostNote">Anthropic's organization cost report may include other projects and exclude some billing items. It is not an invoice or an account balance.</p><p class="panel-footnote" id="billingCoverage">No organization cost report is connected.</p></article></section>
+
+        <section class="panel" id="health" aria-labelledby="healthTitle"><div class="panel-heading"><div><span class="eyebrow">Ready for the next profile</span><h2 id="healthTitle">Service readiness</h2></div><span class="panel-meta">Configuration checks</span></div><div class="health-grid" id="serviceList"><p class="empty-state">Service status is not available yet.</p></div><p class="panel-footnote">Configuration readiness is a setup check; it does not guarantee provider uptime.</p></section>
+        <section class="panel events-panel" aria-labelledby="eventsTitle"><div class="panel-heading"><div><span class="eyebrow">Recent recorded activity</span><h2 id="eventsTitle">A closer look</h2></div><span class="panel-meta">Safe event details</span></div><div class="table-scroll"><table><caption class="vh">Recent application activity</caption><thead><tr><th scope="col">Time</th><th scope="col">Event</th><th scope="col">Outcome</th><th scope="col">Details</th></tr></thead><tbody id="eventRows"><tr><td colspan="4" class="empty-state">No recent events to show.</td></tr></tbody></table></div><p class="panel-footnote">No photos, prompts, transcripts, passwords, or API keys appear here.</p></section>
+        <footer class="dashboard-footer"><p>Keep Fix Cut · Private overview</p><p id="periodLabel">7-day view</p></footer>
+      </div>
+    </div>
+  </main>
+  <dialog id="copyDialog" class="copy-dialog" aria-labelledby="copyTitle"><h2 id="copyTitle">Copy your overview</h2><p>Select the text below, then use your browser's Copy action.</p><textarea id="copyText" readonly aria-label="Dashboard summary to copy"></textarea><button class="button button-primary" type="button" id="copyDoneBtn">Done</button></dialog>
+</body>
+</html>

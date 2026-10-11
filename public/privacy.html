@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#183C32">
+  <title>Privacy | Keep Fix Cut</title>
+  <meta name="description" content="How Keep Fix Cut handles profile photos, prompts, voice recordings, and reports.">
+  <link rel="canonical" href="https://keepfixcut.com/privacy">
+  <link rel="stylesheet" href="/fonts.css">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/privacy.css">
+</head>
+<body class="privacy-page">
+  <a class="skip-link" href="#privacy">Skip to privacy notice</a>
+  <header>
+    <div class="wrap">
+      <a class="logo" href="/" aria-label="Keep Fix Cut, home"><span class="k">Keep</span> <span class="f">Fix</span> <span class="c">Cut</span></a>
+      <a class="btn btn-ghost btn-sm" href="/">Back to the app</a>
+    </div>
+  </header>
+  <main id="privacy" class="privacy-content wrap" tabindex="-1">
+    <p class="privacy-eyebrow">Your profile. Your choice.</p>
+    <h1>Privacy, in plain words.</h1>
+    <p class="privacy-intro">The photo editor works on your device. A profile scan sends your selected content to AI providers. Here is what happens at each step.</p>
+    <p class="privacy-date">Updated October 11, 2026</p>
+
+    <section aria-labelledby="scan-data">
+      <h2 id="scan-data">When you run a scan</h2>
+      <p>Your browser resizes photos before sending them, along with your pasted prompts, selected dating app, relationship goal, and optional age, through our Cloudflare service to Anthropic's Claude API. Claude returns the feedback and suggested rewrites.</p>
+      <p>If you add a voice recording, Cloudflare Workers AI transcribes it. That transcript and basic delivery measurements, such as duration and pace, go to Claude for feedback. Your microphone is used only when you choose to record and allow access.</p>
+      <p>Choosing a file or editing a photo does not start a scan. Uploads happen when you select <strong>Run teardown</strong>.</p>
+    </section>
+
+    <section aria-labelledby="save-data">
+      <h2 id="save-data">What Keep Fix Cut saves</h2>
+      <p>Visitors do not need an account. Keep Fix Cut does not save uploads or reports in a server database. Scan content is processed for the request. Your report stays in the open page. Reloading or closing the page clears its report and selected files.</p>
+      <p>The photo editor uses your browser to crop and adjust light and color. When you save a photo or a report, the downloaded file stays on your device until you remove it.</p>
+      <p>Cloudflare handles website traffic and operational logs, which can include request details such as your IP address, time, and response status. The app does not intentionally log your photos, recordings, pasted prompts, transcripts, or report content.</p>
+    </section>
+
+    <section aria-labelledby="site-analytics">
+      <h2 id="site-analytics">Site activity and usage</h2>
+      <p>We count page views, short-lived browsing sessions, feature use, referring website names, campaign labels, country, and device category. Analytics do not contain your photos, recordings, profile text, prompts, transcripts, account details, full referrer URLs, or IP addresses.</p>
+      <p>A random identifier stays in your browser tab and resets after 30 minutes without activity. The server stores a hash of that identifier. Live visitor counts estimate active browsing sessions, rather than identified people. Browsing analytics respect Do Not Track and Global Privacy Control signals.</p>
+      <p>We also record review success or failure, response time, model name, token counts, and estimated AI costs. This helps us check service reliability and spending without saving your profile content.</p>
+      <p>Analytics records older than 30 days are removed by a daily cleanup. Cloudflare backups may retain deleted records longer under its platform policies. Only the site administrator can view the analytics dashboard.</p>
+    </section>
+
+    <section aria-labelledby="providers">
+      <h2 id="providers">The providers involved</h2>
+      <p>Anthropic's standard API policy retains inputs and outputs for up to 30 days, with exceptions for matters such as safety and legal requirements. Provider policies and account arrangements can affect retention. Read <a href="https://privacy.claude.com/en/articles/7996866-how-long-do-you-store-my-organization-s-data">Anthropic's commercial data retention policy</a> for the current details.</p>
+      <p>Cloudflare hosts the site and processes voice recordings through Workers AI. Read <a href="https://developers.cloudflare.com/workers-ai/platform/data-usage/">Cloudflare's Workers AI data policy</a> and <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare's privacy policy</a>.</p>
+      <p>Fonts are served with the site. If the optional Cloudflare Turnstile verification is enabled, it processes browser information to help prevent abuse under Cloudflare's privacy policy.</p>
+    </section>
+
+    <section aria-labelledby="choices">
+      <h2 id="choices">Before you share</h2>
+      <p>This service is for adults 18 and older. Use your own photos and profile content, or content you have permission to share. Leave out private contact details, addresses, and anything you do not want an AI provider to process.</p>
+      <p>Feedback is AI-generated guidance. It can miss context or get things wrong, and it cannot predict matches or relationships. Review every suggestion and rewrite before using it.</p>
+      <p>If you prefer to keep a photo on your device, use the photo editor without running a scan.</p>
+    </section>
+    <a class="btn btn-primary" href="/#bench">Try the photo editor</a>
+  </main>
+  <footer><div class="wrap"><span>Keep Fix Cut</span><a href="/">Return to the app</a></div></footer>
+  <script src="/telemetry.js" defer></script>
+</body>
+</html>

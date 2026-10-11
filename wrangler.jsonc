@@ -4,12 +4,17 @@
   "main": "src/index.js",
   "compatibility_date": "2026-06-01",
 
-  // Static site. Requests that match a file in ./public are served directly;
-  // everything else (including /api/*) goes to the Worker.
+  // Keep local requests local. Otherwise Wrangler infers the first production
+  // route as its origin and rewrites canonical HTTPS redirects back into loops.
+  "dev": { "ip": "127.0.0.1", "host": "127.0.0.1", "port": 8787, "local_protocol": "http" },
+
+  // Every request passes through the Worker for canonical redirects, API
+  // routing, and security headers, before static assets are served.
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "not_found_handling": "single-page-application"
+    "run_worker_first": true,
+    "not_found_handling": "none"
   },
 
   // Per-IP limit on scans: 4 per 60 seconds. Each scan costs you API money,
@@ -17,20 +22,44 @@
   // Workers AI: Whisper transcribes voice prompts. Small free daily allowance, then cents per audio minute.
   "ai": { "binding": "AI" },
 
+  "d1_databases": [{
+    "binding": "ANALYTICS_DB",
+    "database_name": "keepfixcut-analytics",
+    "database_id": "e3ccc794-5c69-45fd-8988-30cbef62b141",
+    "migrations_dir": "migrations"
+  }],
+
+  "triggers": { "crons": ["17 4 * * *"] },
+
   "ratelimits": [
     {
       "name": "SCAN_LIMITER",
       "namespace_id": "4401",
       "simple": { "limit": 4, "period": 60 }
+    },
+    {
+      "name": "TELEMETRY_LIMITER",
+      "namespace_id": "4402",
+      "simple": { "limit": 120, "period": 60 }
+    },
+    {
+      "name": "ADMIN_LOGIN_LIMITER",
+      "namespace_id": "4403",
+      "simple": { "limit": 5, "period": 60 }
     }
   ],
 
   "vars": {
     // Model used for scans. Sonnet is the cost/quality sweet spot for vision.
     "MODEL": "claude-sonnet-5-5",
-    // After your first deploy, set this to your live URL(s), comma separated,
-    // e.g. "https://rake.yourname.workers.dev,https://getrake.com".
-    // Empty means scans are accepted from any origin.
+    "ANALYTICS_PRICE_MODEL": "claude-sonnet-5-5",
+    "ANALYTICS_INPUT_USD_PER_MTOK": "2",
+    "ANALYTICS_OUTPUT_USD_PER_MTOK": "10",
+    "ANALYTICS_CACHE_READ_USD_PER_MTOK": "0.1",
+    "ANALYTICS_CACHE_WRITE_5M_USD_PER_MTOK": "2.5",
+    "ANALYTICS_CACHE_WRITE_1H_USD_PER_MTOK": "4",
+    // Exact browser origins allowed to submit scans. Empty falls back to
+    // same-origin only; a local Wrangler server accepts its own local origin.
     "ALLOWED_ORIGINS": "https://keepfixcut.com,https://www.keepfixcut.com,https://rake.coleciprari.workers.dev",
     // Optional Cloudflare Turnstile bot check. Put the SITE key here and the
     // SECRET key in a secret (TURNSTILE_SECRET). Leave empty to skip.

@@ -5,10 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
+    "preview:qa": "node test/preview.mjs",
     "deploy": "wrangler deploy",
-    "logs": "wrangler tail"
+    "logs": "wrangler tail",
+    "test": "node --test test/*.test.js",
+    "check": "node --check src/index.js && node --check src/admin.js && node --check src/analytics.js && node --check public/admin.js && node --check public/telemetry.js && node --check public/app.js && node --check public/writing-rules.js",
+    "vendor": "node scripts/vendor.mjs"
   },
   "devDependencies": {
+    "pica": "10.0.3",
     "wrangler": "^4.149.0"
   }
 }

@@ -2,3 +2,9 @@
 # .dev.vars is git-ignored. In production, use `npx wrangler secret put` instead.
 ANTHROPIC_API_KEY=sk-ant-your-key-here
 # TURNSTILE_SECRET=0x4AAAA...
+# Private dashboard: generate a password hash and random session secret.
+# Use scripts/create-admin.mjs; never store the plain password in this file.
+# ADMIN_PASSWORD_HASH=pbkdf2_sha256$100000$salt$hash
+# ADMIN_SESSION_SECRET=your-random-session-secret-at-least-32-characters
+# Optional organization-level Anthropic reporting credential, separate from the scan key.
+# ANTHROPIC_ADMIN_KEY=your-organization-admin-key
