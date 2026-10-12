@@ -157,6 +157,36 @@ const roundedCost = value => value == null ? null : Math.round(Number(value) * 1
  * Amounts arrive as decimal strings in cents. Cached for 10 minutes so dashboard refreshes don't hit the API. */
 const BILLING_CACHE_MS = 10 * 60 * 1000;
 const billingMemo = new Map();
+/** Finds the workspace that holds this Worker's ANTHROPIC_API_KEY by matching Anthropic's redacted key hint.
+ * Cost reports have no per-key filter, so workspace is the narrowest scope Anthropic bills by. */
+async function appWorkspace(env, get) {
+  const appKey = env.ANTHROPIC_API_KEY || "";
+  const keys = [];
+  let after = null;
+  for (let i = 0; i < 5; i++) {
+    const url = new URL("https://api.anthropic.com/v1/organizations/api_keys");
+    url.searchParams.set("limit", "1000");
+    if (after) url.searchParams.set("after_id", after);
+    const body = await get(url);
+    keys.push(...(body.data || []));
+    if (!body.has_more || !body.last_id) break;
+    after = body.last_id;
+  }
+  const wsOf = k => k.scope?.workspace_id || k.workspace_id || null;
+  let mine = null;
+  if (env.ANTHROPIC_WORKSPACE_ID) mine = { ws: env.ANTHROPIC_WORKSPACE_ID, isDefault: false };
+  else {
+    const matches = keys.filter(k => {
+      const [head, tail] = String(k.partial_key_hint || "").split("...");
+      return head && tail && appKey.startsWith(head) && appKey.endsWith(tail);
+    });
+    if (matches.length !== 1) throw new AnalyticsError(404, matches.length ? "More than one Anthropic key matches this app's key. Set ANTHROPIC_WORKSPACE_ID in wrangler.jsonc." : "This app's API key isn't in the Anthropic organization that owns the Admin key.");
+    mine = { ws: wsOf(matches[0]), isDefault: !matches[0].workspace_id && matches[0].scope?.type === "workspace" };
+    if (!mine.ws) throw new AnalyticsError(404, "This app's API key isn't tied to a workspace, so its cost can't be separated. Create it inside a workspace.");
+  }
+  const otherKeys = Math.max(0, keys.filter(k => k.status === "active" && wsOf(k) === mine.ws).length - 1);
+  return { workspaceId: mine.ws, isDefault: mine.isDefault, otherKeys };
+}
 export async function fetchOfficialBilling(env, days, fetcher = fetch) {
   const key = env.ANTHROPIC_ADMIN_KEY;
   if (!key) return { configured: false, connected: false, scope: "organization", reason: "An organization Admin API connection is not configured. App scan estimates exclude Whisper, Cloudflare, and invoice adjustments." };
@@ -164,23 +194,35 @@ export async function fetchOfficialBilling(env, days, fetcher = fetch) {
   if (memo && Date.now() - memo.at < BILLING_CACHE_MS) return memo.value;
   const now = new Date(), startDay = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - (days - 1)));
   let value;
+  const get = async url => {
+    const res = await fetcher(url.toString(), { headers: { "x-api-key": key, "anthropic-version": "2023-06-01" }, signal: AbortSignal.timeout(10000) });
+    if (res.status === 401 || res.status === 403) throw new AnalyticsError(res.status, "Anthropic rejected the Admin API key. It must be an organization Admin key (sk-ant-admin01-...).");
+    if (!res.ok) throw new AnalyticsError(502, `Anthropic's Admin API returned ${res.status}. Try again later.`);
+    return res.json();
+  };
   try {
+    const app = await appWorkspace(env, get);
     let totalCents = 0, page = null, pages = 0, buckets = 0;
     do {
       const url = new URL("https://api.anthropic.com/v1/organizations/cost_report");
       url.searchParams.set("starting_at", startDay.toISOString());
       url.searchParams.set("bucket_width", "1d");
       url.searchParams.set("limit", "31");
+      url.searchParams.append("group_by[]", "workspace_id");
       if (page) url.searchParams.set("page", page);
-      const res = await fetcher(url.toString(), { headers: { "x-api-key": key, "anthropic-version": "2023-06-01" }, signal: AbortSignal.timeout(10000) });
-      if (res.status === 401 || res.status === 403) throw new AnalyticsError(res.status, "Anthropic rejected the Admin API key. It must be an organization Admin key (sk-ant-admin01-...).");
-      if (!res.ok) throw new AnalyticsError(502, `Anthropic's cost report returned ${res.status}. Try again later.`);
-      const body = await res.json();
-      for (const bucket of body.data || []) { buckets++; for (const item of bucket.results || []) if ((item.currency || "USD") === "USD") totalCents += Number(item.amount) || 0; }
+      const body = await get(url);
+      for (const bucket of body.data || []) {
+        buckets++;
+        for (const item of bucket.results || []) {
+          const ws = item.workspace_id || null;
+          if ((item.currency || "USD") === "USD" && (ws === app.workspaceId || (app.isDefault && ws === null))) totalCents += Number(item.amount) || 0;
+        }
+      }
       page = body.has_more ? body.next_page : null;
     } while (page && ++pages < 5);
-    value = { configured: true, connected: true, scope: "organization", totalUSD: Math.round(totalCents) / 100, since: startDay.toISOString(), buckets, fetchedAt: now.toISOString(),
-      reason: `All Claude API usage on your Anthropic organization since ${startDay.toISOString().slice(0, 10)} (UTC days), including other projects. Data can lag a few minutes. Not an invoice.` };
+    const shared = app.otherKeys > 0 ? ` That workspace also has ${app.otherKeys} other active key${app.otherKeys === 1 ? "" : "s"}, so their usage is included. Give Keep Fix Cut its own workspace and key to isolate it.` : "";
+    value = { configured: true, connected: true, scope: "workspace", workspaceId: app.workspaceId, sharedKeys: app.otherKeys, totalUSD: Math.round(totalCents) / 100, since: startDay.toISOString(), buckets, fetchedAt: now.toISOString(),
+      reason: `Anthropic-billed cost for this app's API key workspace since ${startDay.toISOString().slice(0, 10)} (UTC days).${shared} Excludes Whisper and Cloudflare. Data can lag a few minutes. Not an invoice.` };
   } catch (error) {
     console.error("billing_fetch_failed");
     value = { configured: true, connected: false, scope: "organization", reason: error instanceof AnalyticsError ? error.message : "Anthropic's cost report couldn't be reached. Try again later." };
