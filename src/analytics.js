@@ -153,6 +153,42 @@ const number = value => Number(value || 0);
 async function rows(db, sql, ...values) { return (await db.prepare(sql).bind(...values).all()).results || []; }
 const roundedCost = value => value == null ? null : Math.round(Number(value) * 100000000) / 100000000;
 
+/** Anthropic organization cost report (Admin API). Server-side only; the admin key never reaches the browser.
+ * Amounts arrive as decimal strings in cents. Cached for 10 minutes so dashboard refreshes don't hit the API. */
+const BILLING_CACHE_MS = 10 * 60 * 1000;
+const billingMemo = new Map();
+export async function fetchOfficialBilling(env, days, fetcher = fetch) {
+  const key = env.ANTHROPIC_ADMIN_KEY;
+  if (!key) return { configured: false, connected: false, scope: "organization", reason: "An organization Admin API connection is not configured. App scan estimates exclude Whisper, Cloudflare, and invoice adjustments." };
+  const memo = billingMemo.get(days);
+  if (memo && Date.now() - memo.at < BILLING_CACHE_MS) return memo.value;
+  const now = new Date(), startDay = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - (days - 1)));
+  let value;
+  try {
+    let totalCents = 0, page = null, pages = 0, buckets = 0;
+    do {
+      const url = new URL("https://api.anthropic.com/v1/organizations/cost_report");
+      url.searchParams.set("starting_at", startDay.toISOString());
+      url.searchParams.set("bucket_width", "1d");
+      url.searchParams.set("limit", "31");
+      if (page) url.searchParams.set("page", page);
+      const res = await fetcher(url.toString(), { headers: { "x-api-key": key, "anthropic-version": "2023-06-01" }, signal: AbortSignal.timeout(10000) });
+      if (res.status === 401 || res.status === 403) throw new AnalyticsError(res.status, "Anthropic rejected the Admin API key. It must be an organization Admin key (sk-ant-admin01-...).");
+      if (!res.ok) throw new AnalyticsError(502, `Anthropic's cost report returned ${res.status}. Try again later.`);
+      const body = await res.json();
+      for (const bucket of body.data || []) { buckets++; for (const item of bucket.results || []) if ((item.currency || "USD") === "USD") totalCents += Number(item.amount) || 0; }
+      page = body.has_more ? body.next_page : null;
+    } while (page && ++pages < 5);
+    value = { configured: true, connected: true, scope: "organization", totalUSD: Math.round(totalCents) / 100, since: startDay.toISOString(), buckets, fetchedAt: now.toISOString(),
+      reason: `All Claude API usage on your Anthropic organization since ${startDay.toISOString().slice(0, 10)} (UTC days), including other projects. Data can lag a few minutes. Not an invoice.` };
+  } catch (error) {
+    console.error("billing_fetch_failed");
+    value = { configured: true, connected: false, scope: "organization", reason: error instanceof AnalyticsError ? error.message : "Anthropic's cost report couldn't be reached. Try again later." };
+  }
+  billingMemo.set(days, { at: Date.now(), value });
+  return value;
+}
+
 /** Aggregate-only read. Caller must authenticate first. Never returns session IDs. */
 export async function analyticsStats(env, days, auth) {
   const db = env.ANALYTICS_DB, end = Date.now(), start = end - days * 86400000;
@@ -182,11 +218,11 @@ export async function analyticsStats(env, days, auth) {
   for (const item of sessionTrend) if (trendMap.has(item.date)) trendMap.get(item.date).sessions = number(item.sessions);
   for (const item of eventTrend) if (trendMap.has(item.date)) trendMap.get(item.date).pageviews = number(item.pageviews);
   for (const item of scanTrend) if (trendMap.has(item.date)) Object.assign(trendMap.get(item.date), { scans: number(item.scans), successfulScans: number(item.successfulScans), failedScans: number(item.failedScans), estimatedUSD: item.unpriced ? null : roundedCost(item.estimatedUSD || 0) });
-  const billingConfigured = !!env.ANTHROPIC_ADMIN_KEY;
+  const billing = await fetchOfficialBilling(env, days);
   return {
     range: { days, start: iso(start), end: iso(end), bucket: days === 1 ? "hour" : "day", timeZone: "UTC" }, csrfToken: auth.csrf, expiresAt: iso(auth.exp),
     coverage: { firstEventAt: iso(coverage?.first_event), lastEventAt: iso(coverage?.last_event), trackingStart: iso(coverage?.tracking_start), retentionDays: RETENTION_DAYS },
-    readiness: { database: true, passwordAuth: true, telemetryLimiter: !!env.TELEMETRY_LIMITER, loginLimiter: !!env.ADMIN_LOGIN_LIMITER, telemetryEnabled: !!env.TELEMETRY_LIMITER, anthropicKey: !!env.ANTHROPIC_API_KEY, officialBilling: false },
+    readiness: { database: true, passwordAuth: true, telemetryLimiter: !!env.TELEMETRY_LIMITER, loginLimiter: !!env.ADMIN_LOGIN_LIMITER, telemetryEnabled: !!env.TELEMETRY_LIMITER, anthropicKey: !!env.ANTHROPIC_API_KEY, officialBilling: !!billing.connected },
     live: { activeSessions: number(sessions?.active), windowSeconds: ACTIVE_WINDOW_SECONDS, label: "Active browser sessions (estimate)" },
     totals: { sessions: totalSessions, pageviews: number(eventMap.get("page_view")?.count), httpRequests: number(eventMap.get("http_request")?.count), scans: totalScans, successfulScans: successes, failedScans: number(counts?.failed), scanSuccessRate: totalScans ? successes / totalScans * 100 : 0, reviewSessions, reviewRate: totalSessions ? Math.min(100, reviewSessions / totalSessions * 100) : 0 },
     scanPerformance: { averageMs: durations.length ? Math.round(durations.reduce((sum, item) => sum + item, 0) / durations.length) : null, p50Ms: quantile(0.5), p95Ms: quantile(0.95) },
@@ -194,7 +230,7 @@ export async function analyticsStats(env, days, auth) {
     trend: Array.from(trendMap.values()), sources: sourceRows, countries: countryRows, devices: deviceRows, campaigns,
     funnel: [["page_view", "Page views"], ["photo_added", "Photos added"], ["voice_added", "Voice added"], ["scan_started", "Reviews started"], ["photo_edited", "Photo fixes exported"], ["report_downloaded", "Reports downloaded"]].map(([event, label]) => ({ event, label, count: number(eventMap.get(event)?.count) })),
     errors, recent: recent.map(item => ({ ...item, timestamp: iso(item.timestamp) })),
-    officialBilling: { configured: billingConfigured, connected: false, scope: "organization", reason: billingConfigured ? "Organization billing reporting is not connected. App scan estimates are shown separately." : "An organization Admin API connection is not configured. App scan estimates exclude Whisper, Cloudflare, and invoice adjustments." },
+    officialBilling: billing,
     privacy: { visitorUnit: "short-lived browser sessions", activeWindowSeconds: ACTIVE_WINDOW_SECONDS },
   };
 }

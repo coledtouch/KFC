@@ -205,9 +205,10 @@ function renderStats(data){
   setText("estimatedCostNote",number(usage.estimatedUSD)===null ? "The full app estimate is unavailable because some review usage or pricing is missing. This is not an invoice or account balance." : "Estimated from this app's recorded Anthropic tokens, including cache usage where reported. Excludes voice transcription and activity from other apps.");
   const partial=number(usage.estimatedUSD)===null && number(usage.knownEstimatedUSD)!==null ? ` Known portion: ${money(usage.knownEstimatedUSD)}; this is not the full period cost.` : "";
   setText("tokenCoverage",`${count(usage.pricedScans)} reviews priced · ${count(usage.unpricedScans)} reviews with incomplete usage or pricing.${partial}`);
-  setText("officialCost","-");
-  setText("billingStatus",officialBilling.configured ? "Not available" : "Not connected");
-  $("billingStatus").className="status-badge neutral";
+  const billed=officialBilling.connected && typeof officialBilling.totalUSD==="number";
+  setText("officialCost",billed ? money(officialBilling.totalUSD) : "-");
+  setText("billingStatus",billed ? "Connected" : officialBilling.configured ? "Not available" : "Not connected");
+  $("billingStatus").className="status-badge "+(billed ? "good" : "neutral");
   setText("billingCoverage",text(officialBilling.reason,450) || "No organization cost report is connected. No account-wide cost is inferred from app usage.");
   const first=coverage.firstEventAt || coverage.trackingStart;
   setText("coverage",`${first ? "Tracking since "+dateTime(first) : "No activity recorded yet"} · ${count(coverage.retentionDays)}-day retention · ${utcPeriod(range.start,range.end)}`);
